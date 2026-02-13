@@ -1,14 +1,12 @@
 "use client";
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import authClient  from "@/lib/auth-client";
-import {toast} from "sonner";
+import authClient from "@/lib/auth-client";
+import { toast } from "sonner";
 
 const schema = z.object({
     email: z.string().email("Valid email required"),
@@ -31,18 +29,19 @@ export default function LoginPage() {
         });
 
         if (error) {
-            toast.error('Login failed');
+            // also ensure string only
+            toast.error(error?.message || "Login failed");
             return;
         }
+
         toast.success("Login Successful!");
         router.push("/dashboard");
+        router.refresh();
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 via-white to-zinc-200 px-4">
             <div className="w-full max-w-md rounded-3xl bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl p-8">
-
-                {/* Heading */}
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-semibold text-zinc-900">Welcome Back</h1>
                     <p className="text-sm text-zinc-600 mt-2">
@@ -51,7 +50,6 @@ export default function LoginPage() {
                 </div>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-
                     <div>
                         <label className="block text-sm font-medium text-zinc-700 mb-1">
                             Email
@@ -61,43 +59,37 @@ export default function LoginPage() {
                             placeholder="you@example.com"
                             {...register("email")}
                             className={`w-full h-12 rounded-xl border px-4 text-sm outline-none transition
-          placeholder:text-zinc-400 bg-white/80 text-black
-          focus:ring-2 focus:ring-black/10
-          ${errors.email
-                                ? "border-red-500 focus:ring-red-500/20"
-                                : "border-zinc-300 focus:border-zinc-500"
+                placeholder:text-zinc-400 bg-white/80 text-black
+                focus:ring-2 focus:ring-black/10
+                ${
+                                errors.email
+                                    ? "border-red-500 focus:ring-red-500/20"
+                                    : "border-zinc-300 focus:border-zinc-500"
                             }`}
                         />
                         {errors.email && (
-                            <p className="text-sm text-red-600 mt-1">
-                                {errors.email.message}
-                            </p>
+                            <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
                         )}
                     </div>
 
                     <div>
-                        <div className="flex justify-between items-center mb-1">
-                            <label className="text-sm font-medium text-zinc-700">
-                                Password
-                            </label>
-                        </div>
+                        <label className="text-sm font-medium text-zinc-700">Password</label>
 
                         <input
                             type="password"
                             placeholder="••••••••"
                             {...register("password")}
-                            className={`w-full h-12 rounded-xl border px-4 text-sm outline-none transition
-          placeholder:text-zinc-400 bg-white/80 text-black
-          focus:ring-2 focus:ring-black/10
-          ${errors.password
-                                ? "border-red-500 focus:ring-red-500/20"
-                                : "border-zinc-300 focus:border-zinc-500"
+                            className={`mt-1 w-full h-12 rounded-xl border px-4 text-sm outline-none transition
+                placeholder:text-zinc-400 bg-white/80 text-black
+                focus:ring-2 focus:ring-black/10
+                ${
+                                errors.password
+                                    ? "border-red-500 focus:ring-red-500/20"
+                                    : "border-zinc-300 focus:border-zinc-500"
                             }`}
                         />
                         {errors.password && (
-                            <p className="text-sm text-red-600 mt-1">
-                                {errors.password.message}
-                            </p>
+                            <p className="text-sm text-red-600 mt-1">{errors.password.message}</p>
                         )}
                     </div>
 
@@ -105,8 +97,8 @@ export default function LoginPage() {
                         disabled={isSubmitting}
                         type="submit"
                         className="w-full h-12 rounded-xl bg-black text-white text-sm font-medium transition
-        hover:bg-zinc-800 active:scale-[0.98]
-        disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
+              hover:bg-zinc-800 active:scale-[0.98]
+              disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
                     >
                         {isSubmitting ? "Signing in..." : "Sign In"}
                     </button>
@@ -114,16 +106,11 @@ export default function LoginPage() {
 
                 <p className="text-center text-sm text-zinc-600 mt-6">
                     New here?{" "}
-                    <Link
-                        href="/register"
-                        className="font-medium text-black hover:underline"
-                    >
+                    <Link href="/register" className="font-medium text-black hover:underline">
                         Create an account
                     </Link>
                 </p>
             </div>
         </div>
-
-
     );
 }
