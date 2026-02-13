@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {authClient} from '@/lib/auth-client'
+import authClient from '@/lib/auth-client'
+import {toast} from "sonner";
 
 const schema = z.object({
     name: z.string().min(1, "Name required").max(60),
@@ -30,48 +31,114 @@ export default function RegisterPage() {
         });
 
         if (error) {
-            alert(error.message || "Sign up failed");
+            toast.error(error.message);
             return;
         }
 
-        // tumhare config me autoSignIn: true hai, so direct dashboard
+        toast.success("Register Successful!");
         router.push("/dashboard");
     };
 
     return (
-        <div style={{ maxWidth: 420, margin: "40px auto" }}>
-            <h1>Register</h1>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 via-white to-zinc-200 px-4">
+            <div className="w-full max-w-md rounded-3xl bg-white/70 backdrop-blur-xl border border-white/40 shadow-xl p-8">
 
-            <form onSubmit={handleSubmit(onSubmit)} style={{ display: "grid", gap: 12 }}>
-                <div>
-                    <input placeholder="Name" {...register("name")} />
-                    {errors.name ? (
-                        <p style={{ color: "crimson" }}>{errors.name.message}</p>
-                    ) : null}
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-semibold text-zinc-900">Create Account</h1>
+                    <p className="text-sm text-zinc-600 mt-2">
+                        Join us — it only takes a minute.
+                    </p>
                 </div>
 
-                <div>
-                    <input placeholder="Email" type="email" {...register("email")} />
-                    {errors.email ? (
-                        <p style={{ color: "crimson" }}>{errors.email.message}</p>
-                    ) : null}
-                </div>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
 
-                <div>
-                    <input placeholder="Password" type="password" {...register("password")} />
-                    {errors.password ? (
-                        <p style={{ color: "crimson" }}>{errors.password.message}</p>
-                    ) : null}
-                </div>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-700 mb-1">
+                            Full Name
+                        </label>
+                        <input
+                            placeholder="Priyanshu Negi"
+                            {...register("name")}
+                            className={`w-full h-12 rounded-xl border px-4 text-sm outline-none transition
+          placeholder:text-zinc-400 bg-white/80
+          focus:ring-2 focus:ring-black/10 text-black
+          ${errors.name
+                                ? "border-red-500 focus:ring-red-500/20"
+                                : "border-zinc-300 focus:border-zinc-500"
+                            }`}
+                        />
+                        {errors.name && (
+                            <p className="text-sm text-red-600 mt-1">
+                                {errors.name.message}
+                            </p>
+                        )}
+                    </div>
 
-                <button disabled={isSubmitting} type="submit">
-                    {isSubmitting ? "Creating..." : "Create account"}
-                </button>
-            </form>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-700 mb-1">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            placeholder="you@example.com"
+                            {...register("email")}
+                            className={`w-full h-12 rounded-xl border px-4 text-sm outline-none transition
+          placeholder:text-zinc-400 bg-white/80 text-black
+          focus:ring-2 focus:ring-black/10
+          ${errors.email
+                                ? "border-red-500 focus:ring-red-500/20"
+                                : "border-zinc-300 focus:border-zinc-500"
+                            }`}
+                        />
+                        {errors.email && (
+                            <p className="text-sm text-red-600 mt-1">
+                                {errors.email.message}
+                            </p>
+                        )}
+                    </div>
 
-            <p style={{ marginTop: 12 }}>
-                Already have an account? <Link href="/auth/login">Login</Link>
-            </p>
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-700 mb-1">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            {...register("password")}
+                            className={`w-full h-12 rounded-xl border px-4 text-sm outline-none transition
+          placeholder:text-zinc-400 bg-white/80 text-black
+          focus:ring-2 focus:ring-black/10
+          ${errors.password
+                                ? "border-red-500 focus:ring-red-500/20"
+                                : "border-zinc-300 focus:border-zinc-500"
+                            }`}
+                        />
+                        {errors.password && (
+                            <p className="text-sm text-red-600 mt-1">
+                                {errors.password.message}
+                            </p>
+                        )}
+                    </div>
+
+                    <button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full h-12 rounded-xl bg-black text-white text-sm font-medium transition
+        hover:bg-zinc-800 active:scale-[0.98]
+        disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
+                    >
+                        {isSubmitting ? "Creating..." : "Create account"}
+                    </button>
+                </form>
+
+                <p className="text-center text-sm text-zinc-600 mt-6">
+                    Already have an account?{" "}
+                    <Link href="/login" className="font-medium text-black hover:underline">
+                        Login
+                    </Link>
+                </p>
+            </div>
         </div>
+
     );
 }

@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
-import { authClient } from "@/lib/auth-client";
+import authClient from "@/lib/auth-client";
+import { toast } from "sonner"
+
 import TaskForm from "@/components/TaskForm";
 import TaskList from "@/components/TaskList";
 
@@ -27,6 +29,7 @@ export default function DashboardPage() {
             setTasks(Array.isArray(tasksRes) ? tasksRes : []);
         } catch (e) {
             if (e?.status === 401) {
+                toast.error('User must login')
                 router.push("/login"); // change to "/auth/login" if needed
                 return;
             }
@@ -38,7 +41,6 @@ export default function DashboardPage() {
 
     useEffect(() => {
         load();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const createTask = async (payload) => {
@@ -48,8 +50,10 @@ export default function DashboardPage() {
                 method: "POST",
                 body: JSON.stringify(payload),
             });
+            toast.success("Task created successfully");
             await load();
         } catch (e) {
+            toast.error('creation failed');
             setMsg(e?.data?.message || e?.message || "Create failed");
         }
     };
@@ -59,36 +63,28 @@ export default function DashboardPage() {
         try {
             await apiFetch(`/api/v1/tasks/${id}`, { method: "DELETE" });
             setTasks((prev) => prev.filter((t) => t?._id !== id));
+            toast.success("Task deleted successfully");
         } catch (e) {
+            toast.error('Delete failed');
             setMsg(e?.data?.message || e?.message || "Delete failed");
         }
     };
 
-    // ✅ ADD THIS: update/edit task
     const updateTask = async (id, payload) => {
         setMsg("");
         try {
-            // If your API uses PUT instead of PATCH, switch method to "PUT"
             const updated = await apiFetch(`/api/v1/tasks/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify(payload),
             });
 
-            // Update UI without full reload:
             setTasks((prev) =>
                 prev.map((t) => (t?._id === id ? (updated?.task ?? updated ?? { ...t, ...payload }) : t))
             );
+            toast.success("Task updated successfully");
         } catch (e) {
-            // TaskList shows localMsg from the thrown error, so rethrow
+            toast.error('Update failed');
             throw e;
-        }
-    };
-
-    const logout = async () => {
-        try {
-            await authClient.signOut();
-        } finally {
-            router.push("/login"); // change if needed
         }
     };
 
@@ -135,27 +131,15 @@ export default function DashboardPage() {
                                 </p>
                             ) : null}
                         </div>
-
-                        {/* Only Logout button */}
-                        <button
-                            onClick={logout}
-                            className="h-10 rounded-xl bg-zinc-900 px-4 text-sm font-medium text-white shadow-sm transition
-                         hover:bg-zinc-800 active:scale-[0.98]"
-                        >
-                            Logout
-                        </button>
                     </div>
 
-                    {/* Message */}
                     {msg ? (
                         <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
                             {msg}
                         </div>
                     ) : null}
 
-                    {/* Content */}
                     <div className="mt-8 grid gap-6 md:grid-cols-2">
-                        {/* Add Task */}
                         <div className="rounded-2xl border border-zinc-200 bg-white/80 p-5 shadow-sm">
                             <div className="mb-4">
                                 <h2 className="text-lg font-semibold text-zinc-900">Add Task</h2>
@@ -166,7 +150,6 @@ export default function DashboardPage() {
                             <TaskForm onCreate={createTask} />
                         </div>
 
-                        {/* Tasks */}
                         <div className="rounded-2xl border border-zinc-200 bg-white/80 p-5 shadow-sm">
                             <div className="mb-4">
                                 <div className="flex items-center justify-between gap-3">
@@ -183,7 +166,7 @@ export default function DashboardPage() {
                             <TaskList
                                 tasks={tasks}
                                 onDelete={deleteTask}
-                                onUpdate={updateTask}   // ✅ PASS THIS
+                                onUpdate={updateTask}
                                 isAdmin={me?.role === "admin"}
                             />
                         </div>

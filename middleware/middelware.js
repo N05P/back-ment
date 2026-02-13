@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
 
-export async function middleware(request) {
-    const token = request.cookies.get("token");
+export function middleware(request) {
+
+    const session = request.cookies.get("better-auth.session");
 
     const { pathname } = request.nextUrl;
 
-    const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
+    const isAuthPage =
+        pathname.startsWith("/login") || pathname.startsWith("/register");
 
-    if (token && isAuthPage) {
+    if (session && isAuthPage) {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
