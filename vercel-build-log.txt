@@ -1,0 +1,29 @@
+▲ Next.js 16.1.6 (Turbopack)
+  Creating an optimized production build ...
+✓ Compiled successfully in 20.5s
+  Running TypeScript ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/7) ...
+  Generating static pages using 1 worker (1/7)
+  Generating static pages using 1 worker (3/7)
+  Generating static pages using 1 worker (5/7)
+✓ Generating static pages using 1 worker (7/7) in 181.9ms
+  Finalizing page optimization ...
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/auth/[...all]
+├ ƒ /api/openapi
+├ ƒ /api/v1/me
+├ ƒ /api/v1/tasks
+├ ƒ /api/v1/tasks/[id]
+├ ƒ /dashboard
+├ ƒ /login
+└ ƒ /register
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+Traced Next.js server files in: 35.502ms
+Created all serverless functions in: 510.608ms
+Collected static files (public/, static/, .next/static): 3.292ms
+Build Completed in /vercel/output [50s]
+Deploying outputs...

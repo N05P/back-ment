@@ -36,7 +36,7 @@ export default function RegisterPage() {
         }
 
         toast.success("Register Successful!");
-        router.push("/dashboard");
+        router.push("/dashboard");y
     };
 
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 export default function TaskList({ tasks, onDelete, onUpdate, isAdmin }) {
     const [editingId, setEditingId] = useState(null);
