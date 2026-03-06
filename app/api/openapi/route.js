@@ -9,7 +9,7 @@ export async function GET() {
             description: "API documentation for your Task Manager backend",
         },
         servers: [
-            { url: "http://localhost:3000", description: "Local" },
+            { url: "https://back-ment-go5v.vercel.app/", description: "Production" },
         ],
         components: {
             securitySchemes: {
